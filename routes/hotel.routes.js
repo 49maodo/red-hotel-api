@@ -80,7 +80,7 @@ router.post('/create', protect, (req, res, next) => {
         if (!nom || !adresse || !email || !numTel || !prix || !devise || !image || !user) {
             return res.status(400).json({ message: 'Tous les champs sont requis' });
         }
-        if (devise != 'XOF' || !devise != 'Euro' || devise !='Dollar') {
+        if (devise != 'XOF' && devise != 'Euro' && devise !='Dollar') {
             return res.status(400).json({ message: 'Veuillez entrer une devise valide (XOF, Euro, Dollar).' });
         }
 
@@ -104,6 +104,9 @@ router.post('/create', protect, (req, res, next) => {
 
         res.status(201).json({ message: 'Hôtel créé avec succès', hotel });
     } catch (error) {
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ message: 'Email invalide' });
+        }
         console.error('Erreur lors de la création de l\'hôtel:', error);
         res.status(500).json({ message: 'Erreur serveur' });
     }
