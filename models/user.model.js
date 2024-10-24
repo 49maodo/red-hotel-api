@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true // Pour éviter les emails en double
+        unique: true,
+        match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     },
     motDePasse: {
         type: String,
