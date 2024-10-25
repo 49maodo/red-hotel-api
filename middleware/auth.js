@@ -5,7 +5,7 @@ const protect = (req, res, next) => {
     const token = req.cookies.token; // Extraire le token du cookie
 
     if (!token) {
-        return res.status(401).json({ message: 'Non autorisé, il faut se connecté' });
+        return res.status(401).json({ message: 'Non autorisé, il faut se connecter' });
     }
 
     try {
@@ -17,7 +17,7 @@ const protect = (req, res, next) => {
         next();
     } catch (error) {
         console.error(error);
-        return res.status(401).json({ message: 'Non autorisé, il faut se connecté' });
+        return res.status(401).json({ message: 'Non autorisé, il faut se connecter' });
     }
 };
 
