@@ -19,7 +19,7 @@ router.get('/', protect, async (req, res) => {
 //     const { nom, adresse, email, numTel, prix, devise } = req.body;
 //     const image = req.file ? `/uploads/hotels/${path.basename(req.file.path)}` : null;
 //     const user = req.user.id; 
-    
+
 //     // Validation des champs
 //     if (!nom || !adresse || !email || !numTel || !prix || !devise || !image) {
 //         return res.status(400).json({ message: 'Tous les champs sont requis' });
@@ -80,7 +80,7 @@ router.post('/create', protect, (req, res, next) => {
         if (!nom || !adresse || !email || !numTel || !prix || !devise || !image || !user) {
             return res.status(400).json({ message: 'Tous les champs sont requis' });
         }
-        if (devise != 'XOF' && devise != 'Euro' && devise !='Dollar') {
+        if (devise != 'XOF' && devise != 'Euro' && devise != 'Dollar') {
             return res.status(400).json({ message: 'Veuillez entrer une devise valide (XOF, Euro, Dollar).' });
         }
 
