@@ -1,4 +1,4 @@
-const User = require('../models/user.model'); 
+const User = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -65,8 +65,8 @@ module.exports.Login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.SECRET_KEY === 'production',
-            // sameSite: 'strict',
-            sameSite: 'None',
+            sameSite: 'strict',
+            // sameSite: 'None',
             maxAge: 3600000 * 24,//1 jour
         })
         // Connexion réussie

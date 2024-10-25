@@ -40,7 +40,8 @@ router.post('/create', protect, (req, res, next) => {
         const image = `/uploads/hotels/${path.basename(req.file.path)}`;
 
         // Validation des champs
-        if (!nom || !adresse || !email || !numTel || !prix || !devise || !image || !user) {
+        if (!nom || !adresse || !email || !numTel || !prix || !devise || !image) {
+            console.log("Données reçues: ", req.body, req.file);
             return res.status(400).json({ message: 'Tous les champs sont requis' });
         }
         if (devise != 'XOF' && devise != 'Euro' && devise != 'Dollar') {
