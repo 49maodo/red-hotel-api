@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Définition du schéma de l'utilisateur
 const userSchema = new mongoose.Schema({
     nom: {
         type: String,
@@ -20,9 +19,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-}, { timestamps: true }); // Ajout de l'option timestamps
+}, { timestamps: true }); 
 
-// Création du modèle User
+
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

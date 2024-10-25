@@ -15,43 +15,6 @@ router.get('/', protect, async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la récupération des hôtels.', error });
     }
 });
-// router.post('/create', protect, uploadHotel.single('image'), async (req, res) => {
-//     const { nom, adresse, email, numTel, prix, devise } = req.body;
-//     const image = req.file ? `/uploads/hotels/${path.basename(req.file.path)}` : null;
-//     const user = req.user.id; 
-
-//     // Validation des champs
-//     if (!nom || !adresse || !email || !numTel || !prix || !devise || !image) {
-//         return res.status(400).json({ message: 'Tous les champs sont requis' });
-//     }
-
-//     try {
-//         // Vérifier si l'hôtel existe déjà
-//         const existingHotel = await Hotel.findOne({ nom, adresse });
-//         if (existingHotel) {
-//             return res.status(400).json({ message: 'L\'hôtel existe déjà' });
-//         }
-
-//         // Créer un nouvel hôtel
-//         const hotel = new Hotel({
-//             nom,
-//             adresse,
-//             email,
-//             numTel,
-//             prix,
-//             devise,
-//             image,
-//             user // Associer l'utilisateur connecté
-//         });
-
-//         await hotel.save();
-
-//         res.status(201).json({ message: 'Hôtel créé avec succès', hotel });
-//     } catch (error) {
-//         console.error('Erreur lors de la création de l\'hôtel:', error);
-//         res.status(500).json({ message: 'Erreur serveur', user: req.user._id });
-//     }
-// });
 
 router.post('/create', protect, (req, res, next) => {
     uploadHotel.single('image')(req, res, function (err) {

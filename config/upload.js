@@ -14,47 +14,47 @@ if (!fs.existsSync(hotelUploadPath)) {
     fs.mkdirSync(hotelUploadPath, { recursive: true });
 }
 
-// Filtrer les fichiers : accepter uniquement les images JPG, JPEG, PNG
+
 const fileFilter = (req, file, cb) => {
     const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     if (allowedMimeTypes.includes(file.mimetype)) {
-        cb(null, true); // Accepter le fichier
+        cb(null, true); 
     } else {
         cb(new Error('Extension de fichier non supportée. Veuillez télécharger un fichier JPG, JPEG ou PNG.'), false); // Refuser le fichier
     }
 };
 
-// Configurer le stockage pour les utilisateurs
+
 const userStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, userUploadPath); // Dossier pour les images des utilisateurs
+        cb(null, userUploadPath); 
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname); // Renommer le fichier
+        cb(null, Date.now() + '-' + file.originalname); 
     },
 });
 
-// Configurer le stockage pour les hôtels
+
 const hotelStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, hotelUploadPath); // Dossier pour les images des hôtels
+        cb(null, hotelUploadPath);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname); // Renommer le fichier
+        cb(null, Date.now() + '-' + file.originalname);
     },
 });
 
-// Middleware d'upload pour les utilisateurs
+
 const uploadUser = multer({
     storage: userStorage,
-    fileFilter // Ajout du fileFilter pour filtrer les fichiers par extension
+    fileFilter
 });
 
-// Middleware d'upload pour les hôtels
+
 const uploadHotel = multer({
     storage: hotelStorage,
-    fileFilter // Ajout du fileFilter pour les hôtels aussi
+    fileFilter 
 });
 
-// Exporter les middlewares
+
 module.exports = { uploadUser, uploadHotel };

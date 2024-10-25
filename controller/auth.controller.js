@@ -1,7 +1,7 @@
-const User = require('../models/user.model'); // Assurez-vous que le chemin vers le modèle User est correct
+const User = require('../models/user.model'); 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+require('dotenv').config();
 // Route d'authentification
 module.exports.Register = async (req, res) => {
     const { nom, prenom, email, motDePasse } = req.body;
