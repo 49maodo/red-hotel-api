@@ -65,7 +65,7 @@ module.exports.Login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.SECRET_KEY === 'production',
-            sameSite: 'strict',
+            // sameSite: 'strict',
             // sameSite: 'None',
             maxAge: 3600000 * 24,//1 jour
         })

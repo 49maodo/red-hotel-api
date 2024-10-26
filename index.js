@@ -25,7 +25,7 @@ app.use(cors(corsOptions));
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/home', (req, res) => {
-    res.json('Hello World!, ')
+    res.json('Hello World! ')
 })
 
 // auth user
