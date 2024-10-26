@@ -66,7 +66,7 @@ module.exports.Login = async (req, res) => {
             httpOnly: true,
             secure: process.env.SECRET_KEY === 'production',
             // sameSite: 'strict',
-            // sameSite: 'None',
+            sameSite: 'None',
             maxAge: 3600000 * 24,//1 jour
         })
         // Connexion réussie
