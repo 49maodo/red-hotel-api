@@ -8,22 +8,24 @@ const path = require('path');
 connectDB();
 
 const app = express();
+app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-    origin: [
-        // 'http://localhost:3000',
-        'https://red-hotel.vercel.app',
-        'https://red-hotel.onrender.com',
-    ],
-    credentials: true, 
-}))
 
-app.use(cookieParser())
+const corsOptions = {
+    origin: [
+        'https://red-hotel.onrender.com',
+        'https://red-hotel.vercel.app',
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+};
+app.use(cors(corsOptions));
+
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/home' , (req, res) => {
-    res.json('Hello World!')
+app.use('/home', (req, res) => {
+    res.json('Hello World!, ')
 })
 
 // auth user
