@@ -14,6 +14,7 @@ app.use(cors({
     origin: [
         // 'http://localhost:3000',
         'https://red-hotel.vercel.app',
+        'https://red-hotel.onrender.com/',
     ],
     credentials: true, 
 }))
