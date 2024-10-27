@@ -11,7 +11,8 @@ const app = express();
 app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+// Configuration pour servir les fichiers statiques
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const corsOptions = {
     origin: [
         'https://red-hotel.onrender.com',
@@ -25,7 +26,7 @@ app.use(cors(corsOptions));
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/home', (req, res) => {
-    res.json('Hello World! ')
+    res.json('Hello World!, ')
 })
 
 // auth user
