@@ -65,8 +65,8 @@ module.exports.Login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.SECRET_KEY === 'production',
-            // sameSite: 'strict',
-            sameSite: 'None',
+            sameSite: 'strict',
+            // sameSite: 'None',
             maxAge: 3600000 * 24,//1 jour
         })
         // Connexion réussie
@@ -91,7 +91,10 @@ module.exports.getUser = async (req, res) => {
 }
 module.exports.Logout = function (req, res) {
     res.cookie('token', '', {
-        maxAge: 0, // Permet de déconnecter l'utilisateur immédiatement
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: "Strict",
+        maxAge: 0,
     })
     res.json({ message: 'Déconnexion réussie' });
 }
