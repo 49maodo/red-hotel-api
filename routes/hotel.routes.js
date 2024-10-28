@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { uploadHotel } = require('../config/upload');
+const { uploadToCloudinary } = require('../config/cloudinary');
 const Hotel = require('../models/hotel.model');
 const { protect } = require('../middleware/auth');
 const path = require('path');
@@ -15,14 +16,11 @@ router.get('/', protect, async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la récupération des hôtels.', error });
     }
 });
-
 router.post('/create', protect, (req, res, next) => {
     uploadHotel.single('image')(req, res, function (err) {
         if (err instanceof multer.MulterError) {
-            // Erreurs liées à multer (par exemple limite de fichier)
             return res.status(400).json({ message: 'Erreur liée à l\'upload du fichier.' });
         } else if (err) {
-            // Si l'erreur provient du fileFilter (extension non autorisée)
             return res.status(400).json({ message: err.message });
         }
         next();
@@ -32,19 +30,17 @@ router.post('/create', protect, (req, res, next) => {
     const user = req.user.id;
 
     try {
-        // Vérifier si le fichier a été rejeté par fileFilter
         if (!req.file) {
             return res.status(400).json({ message: 'Veuillez télécharger un fichier au format JPG, JPEG ou PNG.' });
         }
 
-        const image = `/uploads/hotels/${path.basename(req.file.path)}`;
+        const imageUrl = await uploadToCloudinary(req.file.buffer, 'hotels');
 
         // Validation des champs
-        if (!nom || !adresse || !email || !numTel || !prix || !devise || !image) {
-            console.log("Données reçues: ", req.body, req.file);
+        if (!nom || !adresse || !email || !numTel || !prix || !devise || !imageUrl) {
             return res.status(400).json({ message: 'Tous les champs sont requis' });
         }
-        if (devise != 'XOF' && devise != 'Euro' && devise != 'Dollar') {
+        if (devise !== 'XOF' && devise !== 'Euro' && devise !== 'Dollar') {
             return res.status(400).json({ message: 'Veuillez entrer une devise valide (XOF, Euro, Dollar).' });
         }
 
@@ -60,7 +56,7 @@ router.post('/create', protect, (req, res, next) => {
             numTel,
             prix,
             devise,
-            image,
+            image: imageUrl,
             user
         });
 
@@ -72,8 +68,7 @@ router.post('/create', protect, (req, res, next) => {
             return res.status(400).json({ message: 'Email invalide' });
         }
         console.error('Erreur lors de la création de l\'hôtel:', error);
-        res.status(500).json({ message: 'Erreur serveur' });
+        res.status(500).json({ message: `Erreur serveur ${error.message}`});
     }
 });
-
 module.exports = router;
