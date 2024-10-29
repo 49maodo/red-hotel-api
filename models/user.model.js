@@ -18,7 +18,9 @@ const userSchema = new mongoose.Schema({
     motDePasse: {
         type: String,
         required: true
-    }
+    },
+    resetPasswordToken: String, 
+    resetPasswordExpires: Date,
 }, { timestamps: true }); 
 
 

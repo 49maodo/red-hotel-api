@@ -1,6 +1,8 @@
 const User = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 require('dotenv').config();
 // Route d'authentification
 module.exports.Register = async (req, res) => {
@@ -98,3 +100,85 @@ module.exports.Logout = function (req, res) {
     })
     res.json({ message: 'Déconnexion réussie' });
 }
+
+// Créer le transporteur nodemailer
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+    },
+});
+
+const generateResetToken = () => {
+    return crypto.randomBytes(32).toString('hex');
+};
+
+// 1. Demander la réinitialisation du mot de passe
+exports.requestPasswordReset = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+
+        // Générer un token de réinitialisation
+        const resetToken = generateResetToken();
+
+        // Enregistrer le token et sa date d'expiration dans la base de données
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 heure
+        await user.save();
+
+        // Lien de réinitialisation
+        const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
+
+        // Envoyer le lien par e-mail
+        await transporter.sendMail({
+            from: process.env.EMAIL,
+            to: user.email,
+            subject: 'Réinitialisation de mot de passe',
+            html: `<p>Bonjour,</p>
+                 <p>Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le lien ci-dessous pour créer un nouveau mot de passe. Ce lien est valide pendant une heure.</p>
+                 <a href="${resetUrl}">Réinitialiser le mot de passe</a>
+                 <p>Si vous n'avez pas demandé cette action, ignorez cet e-mail.</p>`
+        });
+
+        res.status(200).json({ message: 'Lien de réinitialisation envoyé par e-mail' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+};
+
+// 2. Réinitialiser le mot de passe
+exports.resetPassword = async (req, res) => {
+    const { token, motDePasse } = req.body;
+
+    try {
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'Token invalide ou expiré' });
+        }
+
+        // Mise à jour du mot de passe
+        const hashedPassword = await bcrypt.hash(motDePasse, 10);
+        user.motDePasse = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        res.status(200).json({ message: 'Mot de passe réinitialisé avec succès' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+};
