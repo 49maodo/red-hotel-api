@@ -30,4 +30,16 @@ const uploadToCloudinary = (fileBuffer, folder) => {
     });
 };
 
-module.exports = { uploadToCloudinary };
+const deleteFromCloudinary = (publicId) => {
+    return new Promise((resolve, reject) => {
+        cloudinary.uploader.destroy(publicId, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
+module.exports = { uploadToCloudinary ,deleteFromCloudinary };
