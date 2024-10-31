@@ -10,7 +10,7 @@ const multer = require('multer');
 
 router.get('/', protect, async (req, res) => {
     try {
-        const hotels = await Hotel.find();
+        const hotels = await Hotel.find({ user: req.user.id });
         res.status(200).json(hotels);
     } catch (error) {
         res.status(500).json({ message: 'Erreur lors de la récupération des hôtels.', error });
