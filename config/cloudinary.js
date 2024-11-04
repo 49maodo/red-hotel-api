@@ -15,7 +15,7 @@ const uploadToCloudinary = (fileBuffer, folder) => {
             {
                 folder,
                 transformation: [
-                    { width: 500, height: 500, crop: 'fill', gravity: 'auto' },
+                    { width: 350, height: 270, crop: 'fill', gravity: 'auto' },
                     { quality: 'auto', fetch_format: 'auto' }
                 ]
             },
