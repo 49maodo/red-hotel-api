@@ -34,7 +34,7 @@ Le projet utilise **Node.js**, **Express.js**, **MongoDB**, **JWT**, **Cloudinar
 1. **Cloner le projet**
    ```bash
 
-   git clone https://github.com/ton-utilisateur/red-hotel-api.git
+   git clone https://github.com/49maodo/red-hotel-api.git
    cd red-hotel-api
 
    ```
