@@ -7,6 +7,29 @@ const { protect } = require('../middleware/auth');
 const path = require('path');
 const multer = require('multer');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Hotels
+ *   description: API pour la gestion des hôtels
+ */
+
+/**
+ * @swagger
+ * /hotel:
+ *   get:
+ *     summary: Récupérer tous les hôtels d’un utilisateur
+ *     tags: [Hotels]
+ *     security: 
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Liste des hôtels récupérée avec succès
+ *       401:
+ *         description: Non autorisé - Token manquant ou invalide
+ *       500:
+ *         description: Erreur serveur lors de la récupération des hôtels
+ */
 router.get('/', protect, async (req, res) => {
     try {
         const hotels = await Hotel.find({ user: req.user.id });
@@ -15,6 +38,51 @@ router.get('/', protect, async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la récupération des hôtels.', error });
     }
 });
+
+/**
+ * @swagger
+ * /hotel/create:
+ *   post:
+ *     summary: Créer un nouvel hôtel
+ *     tags: [Hotels]
+ *     consumes:
+ *       - multipart/form-data
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nom
+ *               - adresse
+ *               - email
+ *               - numTel
+ *               - prix
+ *               - devise
+ *               - image
+ *             properties:
+ *               nom:
+ *                 type: string
+ *               adresse:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               numTel:
+ *                 type: string
+ *               prix:
+ *                 type: number
+ *               devise:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       201:
+ *         description: Hôtel créé avec succès
+ */
 router.post('/create', protect, (req, res, next) => {
     uploadHotel.single('image')(req, res, function (err) {
         if (err instanceof multer.MulterError) {
@@ -70,6 +138,28 @@ router.post('/create', protect, (req, res, next) => {
         res.status(500).json({ message: `Erreur serveur ${error.message}` });
     }
 });
+
+/**
+ * @swagger
+ * /hotel/delete/{id}:
+ *   delete:
+ *     summary: Supprimer un hôtel
+ *     tags: [Hotels]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de l’hôtel à supprimer
+ *     responses:
+ *       200:
+ *         description: Hôtel supprimé avec succès
+ *       404:
+ *         description: Hôtel non trouvé
+ */
 router.delete('/delete/:id', protect, async (req, res) => {
     const hotelId = req.params.id;
 
@@ -94,7 +184,50 @@ router.delete('/delete/:id', protect, async (req, res) => {
     }
 });
 
-// Route pour modifier un hôtel
+/**
+ * @swagger
+ * /hotel/edit/{id}:
+ *   put:
+ *     summary: Modifier un hôtel existant
+ *     tags: [Hotels]
+ *     consumes:
+ *       - multipart/form-data
+ *     security:
+ *       - bearerAuth: require
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID de l’hôtel
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nom:
+ *                 type: string
+ *               adresse:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               numTel:
+ *                 type: string
+ *               prix:
+ *                 type: number
+ *               devise:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Hôtel modifié avec succès
+ *       404:
+ *         description: Hôtel non trouvé
+ */
 router.put('/edit/:id', protect, (req, res, next) => {
     uploadHotel.single('image')(req, res, function (err) {
         if (err instanceof multer.MulterError) {

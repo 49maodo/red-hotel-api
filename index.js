@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 const port = 8000
 const connectDB = require('./config/db')
 const path = require('path');
+const { swaggerUi, specs } = require('./swagger')
 // Connect to MongoDB
 connectDB();
 
@@ -23,6 +24,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Configuration pour servir les fichiers statiques
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/uploads/hotels', express.static(path.join(__dirname, 'uploads/hotels')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/home', (req, res) => {
